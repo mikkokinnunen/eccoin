@@ -27,7 +27,7 @@
 
 #include "amount.h"
 #include "coins.h"
-#include "tx/tx.h"
+#include "chain/tx.h"
 #include "random.h"
 #include "sync.h"
 

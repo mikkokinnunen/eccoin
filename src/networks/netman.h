@@ -66,6 +66,8 @@ public:
     {
         legacyTemplate = new CNetworkTemplate();
         ConstructLegacyNetworkTemplate();
+        paymentTemplate = new CNetworkTemplate();
+        ConstructPaymentNetworkTemplate();
         netManTestnetTemplate = new CNetworkTemplate();
         ConstructTetnet0Template();
         //only run construct networks after all templates have been made
@@ -73,6 +75,7 @@ public:
     }
 
     void ConstructLegacyNetworkTemplate();
+    void ConstructPaymentNetworkTemplate();
     void ConstructTetnet0Template();
     void ConstructNetworks();
 

@@ -182,6 +182,83 @@ void CNetworkManager::ConstructLegacyNetworkTemplate()
     };
 }
 
+void CNetworkManager::ConstructPaymentNetworkTemplate()
+{
+    paymentTemplate->strNetworkID = "PAYMENT";
+    paymentTemplate->strNetworkDataDir = "payment";
+    paymentTemplate->consensus.nMajorityEnforceBlockUpgrade = 750;
+    paymentTemplate->consensus.nMajorityRejectBlockOutdated = 950;
+    paymentTemplate->consensus.nMajorityWindow = 1000;
+    paymentTemplate->consensus.powLimit  = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+    paymentTemplate->consensus.posLimit  = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+    paymentTemplate->consensus.nTargetTimespan = 30 * 45;
+    paymentTemplate->consensus.nTargetSpacing = 45;
+    paymentTemplate->consensus.fPowAllowMinDifficultyBlocks = false;
+    paymentTemplate->consensus.fPowNoRetargeting = false;
+    paymentTemplate->consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
+    paymentTemplate->consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nTargetSpacing
+    paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
+    paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
+    paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
+
+    /**
+     * The message start string is designed to be unlikely to occur in normal data.
+     * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
+     * a large 32-bit integer with any alignment.
+     */
+    paymentTemplate->pchMessageStart[0] = 0xce;
+    paymentTemplate->pchMessageStart[1] = 0xf1;
+    paymentTemplate->pchMessageStart[2] = 0xdb;
+    paymentTemplate->pchMessageStart[3] = 0xfa;
+    paymentTemplate->nDefaultPort = 20000;
+    paymentTemplate->nRPCPort = 20001;
+    paymentTemplate->nMaxTipAge = 24 * 60 * 60;
+    paymentTemplate->nStakeMaxAge = 60*60*2; // 2 hours
+    paymentTemplate->nStakeMinAge = 60*60*2; // 2 hours
+
+    const char* pszTimestamp = "AP | Mar 2, 2014, 10.35 AM IST: China blames Uighur separatists for knife attack; 33 dead";
+    CTransaction txNew;
+    txNew.nTime = 1393744287;
+    txNew.vin.resize(1);
+    txNew.vout.resize(1);
+    txNew.vin[0].scriptSig =  CScript() << 486604799 << CBigNum(9999) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    txNew.vout[0].SetEmpty();
+
+    paymentTemplate->genesis.vtx.push_back(MakeTransactionRef(txNew));
+    paymentTemplate->genesis.hashPrevBlock.SetNull();
+    paymentTemplate->genesis.nVersion = 1;
+    paymentTemplate->genesis.nTime    = 1393744307;
+    paymentTemplate->genesis.nBits    = 0x1e0fffff;
+    paymentTemplate->genesis.nNonce   = 12799721;
+    paymentTemplate->genesis.hashMerkleRoot = BlockMerkleRoot(paymentTemplate->genesis);
+
+    paymentTemplate->consensus.hashGenesisBlock = paymentTemplate->genesis.GetHash();
+    assert(paymentTemplate->consensus.hashGenesisBlock == uint256S("0xa60ac43c88dbc44b826cf315352a8a7b373d2af8b6e1c4c4a0638859c5e9ecd1"));
+    assert(paymentTemplate->genesis.hashMerkleRoot == uint256S("0x4db82fe8b45f3dae2b7c7b8be5ec4c37e72e25eaf989b9db24ce1d0fd37eed8b"));
+
+    paymentTemplate->vSeeds.push_back(CDNSSeedData("CryptoUnitedSeed", "www.cryptounited.io", true));
+    paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed1", "138.197.100.45", true));
+    paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed2", "159.203.172.212", true));
+    paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed3", "eccnode.altj.com", true));
+
+    paymentTemplate->base58Prefixes[CNetworkTemplate::PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
+    paymentTemplate->base58Prefixes[CNetworkTemplate::SCRIPT_ADDRESS] = std::vector<unsigned char>(1,8);
+    paymentTemplate->base58Prefixes[CNetworkTemplate::SECRET_KEY] =     std::vector<unsigned char>(1,161);
+    paymentTemplate->base58Prefixes[CNetworkTemplate::EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
+    paymentTemplate->base58Prefixes[CNetworkTemplate::EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+
+    paymentTemplate->fMiningRequiresPeers = true;
+    paymentTemplate->fDefaultConsistencyChecks = false;
+    paymentTemplate->fRequireStandard = true;
+    paymentTemplate->fMineBlocksOnDemand = false;
+    paymentTemplate->fTestnetToBeDeprecatedFieldRPC = false;
+
+    paymentTemplate->checkpointData = (CCheckpointData){
+        boost::assign::map_list_of
+        (     0, uint256S("0xa60ac43c88dbc44b826cf315352a8a7b373d2af8b6e1c4c4a0638859c5e9ecd1"))
+    };
+}
+
 void CNetworkManager::ConstructTetnet0Template()
 {
     netManTestnetTemplate->strNetworkID = "TESTNET0-TEMPORARY";

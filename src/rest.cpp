@@ -9,7 +9,7 @@
 #include "init.h"
 #include "main.h"
 #include "chain/block.h"
-#include "tx/tx.h"
+#include "chain/tx.h"
 #include "rpc/rpcserver.h"
 #include "streams.h"
 #include "sync.h"
