@@ -191,12 +191,12 @@ void CNetworkManager::ConstructPaymentNetworkTemplate()
     paymentTemplate->consensus.nMajorityWindow = 1000;
     paymentTemplate->consensus.powLimit  = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     paymentTemplate->consensus.posLimit  = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    paymentTemplate->consensus.nTargetTimespan = 30 * 45;
-    paymentTemplate->consensus.nTargetSpacing = 45;
+    paymentTemplate->consensus.nTargetTimespan = 30 * 150;
+    paymentTemplate->consensus.nTargetSpacing = 150;
     paymentTemplate->consensus.fPowAllowMinDifficultyBlocks = false;
     paymentTemplate->consensus.fPowNoRetargeting = false;
-    paymentTemplate->consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-    paymentTemplate->consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nTargetSpacing
+    paymentTemplate->consensus.nRuleChangeActivationThreshold = 7258; // 90% of 8064
+    paymentTemplate->consensus.nMinerConfirmationWindow = 8064; // nPowTargetTimespan / nTargetSpacing
     paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
     paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
     paymentTemplate->consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
