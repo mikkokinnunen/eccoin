@@ -108,6 +108,7 @@ BITCOIN_CORE_H = \
   pubkey.h \
   random.h \
   reverselock.h \
+	rpc/events.h \
   rpc/rpcclient.h \
   rpc/rpcprotocol.h \
   rpc/rpcserver.h \
@@ -291,7 +292,7 @@ endif
 
 # bitcoin binary #
 eccoind_SOURCES = eccoind.cpp
-eccoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+eccoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
 eccoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIC_FLAGS) $(PIE_FLAGS)
 eccoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
