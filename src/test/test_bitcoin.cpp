@@ -106,7 +106,7 @@ CBlock TestChain100Setup::CreateAndProcessBlock(const std::vector<CTransactionRe
 
     // Replace mempool-selected txns with just coinbase plus passed-in txns:
     pblock->vtx.resize(1);
-    BOOST_FOREACH (const CTransactionRef &tx, txns)
+    for (const CTransactionRef &tx : txns)
         pblock->vtx.push_back(tx);
     // IncrementExtraNonce creates a valid coinbase and merkleRoot
     unsigned int extraNonce = 0;

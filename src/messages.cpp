@@ -800,8 +800,10 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew,
             if (nNewHeight > (pnode->nStartingHeight != -1
                                   ? pnode->nStartingHeight - 2000
                                   : 0)) {
-                for (const uint256 &hash : boost::adaptors::reverse(vHashes)) {
-                    pnode->PushBlockHash(hash);
+                std::vector<uint256>::reverse_iterator iter;
+                for (iter = vHashes.rbegin(); iter != vHashes.rend(); iter++ )
+                {
+                    pnode->PushBlockHash(*iter);
                 }
             }
         });
@@ -1981,13 +1983,17 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
                 LogPrint("net", "Large reorg, won't direct fetch to %s (%d)\n",
                         pindexLast->GetBlockHash().ToString(),
                         pindexLast->nHeight);
-            } 
-            else 
+            }
+            else
             {
                 std::vector<CInv> vGetData;
                 // Download as much as possible, from earliest to latest.
-                BOOST_REVERSE_FOREACH(CBlockIndex *pindex, vToFetch) {
-                    if (nodestate->nBlocksInFlight >= MAX_BLOCKS_IN_TRANSIT_PER_PEER) {
+                std::vector<CBlockIndex*>::reverse_iterator riter;
+                for (riter = vToFetch.rbegin(); riter != vToFetch.rend(); riter++)
+                {
+                    CBlockIndex *pindex = *riter;
+                    if (nodestate->nBlocksInFlight >= MAX_BLOCKS_IN_TRANSIT_PER_PEER)
+                    {
                         // Can't download any more from this peer
                         break;
                     }
@@ -2090,7 +2096,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
         std::vector<uint256> vtxid;
         mempool.queryHashes(vtxid);
         std::vector<CInv> vInv;
-        BOOST_FOREACH (uint256 &hash, vtxid)
+        for (uint256 &hash : vtxid)
         {
             CInv inv(MSG_TX, hash);
             if (pfrom->pfilter)
