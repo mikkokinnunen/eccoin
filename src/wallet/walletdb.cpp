@@ -22,6 +22,7 @@
 
 #include "base58.h"
 #include "consensus/validation.h"
+#include "fs.h"
 #include "processtx.h" // For CheckTransaction
 #include "protocol.h"
 #include "serialize.h"
@@ -32,8 +33,6 @@
 #include "wallet/wallet.h"
 #include "wallet.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <thread>
 
 static uint64_t nAccountingEntryNumber = 0;
@@ -906,11 +905,7 @@ bool BackupWallet(const CWallet& wallet, const std::string& strDest)
                     pathDest /= wallet.strWalletFile;
 
                 try {
-#if BOOST_VERSION >= 104000
                     boost::filesystem::copy_file(pathSrc, pathDest, boost::filesystem::copy_option::overwrite_if_exists);
-#else
-                    boost::filesystem::copy_file(pathSrc, pathDest);
-#endif
                     LogPrintf("copied wallet.dat to %s\n", pathDest.string());
                     return true;
                 } catch (const boost::filesystem::filesystem_error& e) {

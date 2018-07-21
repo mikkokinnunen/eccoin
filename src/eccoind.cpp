@@ -27,11 +27,10 @@
 #include "args.h"
 #include "httpserver.h"
 #include "httprpc.h"
+#include "fs.h"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/thread.hpp>
-
+#include <algorithm>
+#include <thread>
 #include <stdio.h>
 
 /* Introduction text for doxygen: */
@@ -61,6 +60,23 @@ void WaitForShutdown()
         fShutdown = ShutdownRequested();
     }
     Interrupt();
+}
+
+/*
+ * Case Insensitive Implementation of startsWith()
+ * It checks if the string 'mainStr' starts with given string 'toMatch'
+ */
+bool startsWithCaseInsensitive(std::string mainStr, std::string toMatch)
+{
+	// Convert mainStr to lower case
+	std::transform(mainStr.begin(), mainStr.end(), mainStr.begin(), ::tolower);
+	// Convert toMatch to lower case
+	std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), ::tolower);
+ 
+	if(mainStr.find(toMatch) == 0)
+		return true;
+	else
+		return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -126,7 +142,7 @@ bool AppInit(int argc, char* argv[])
         bool fCommandLine = false;
         for (int i = 1; i < argc; i++)
         {
-            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "ECC:"))
+            if (!IsSwitchChar(argv[i][0]) && startsWithCaseInsensitive(argv[i], "ECC:"))
             {
                 fCommandLine = true;
             }

@@ -24,12 +24,11 @@
 #include "clientversion.h"
 #include "crypto/hash.h"
 #include "init.h"
+#include "fs.h"
 #include "random.h"
 #include "streams.h"
 #include "tinyformat.h"
 #include "util/util.h"
-
-#include <boost/filesystem.hpp>
 
 CBanDB::CBanDB() {
     pathBanlist = GetDataDir() / "banlist.dat";

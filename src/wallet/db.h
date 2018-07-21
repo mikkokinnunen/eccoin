@@ -22,6 +22,7 @@
 #define BITCOIN_WALLET_DB_H
 
 #include "clientversion.h"
+#include "fs.h"
 #include "serialize.h"
 #include "streams.h"
 #include "sync.h"
@@ -30,8 +31,6 @@
 #include <map>
 #include <string>
 #include <vector>
-
-#include <boost/filesystem/path.hpp>
 
 #include <db_cxx.h>
 
@@ -45,8 +44,6 @@ class CDBEnv
 private:
     bool fDbEnvInit;
     bool fMockDb;
-    // Don't change into boost::filesystem::path, as that can result in
-    // shutdown problems/crashes caused by a static initialized internal pointer.
     std::string strPath;
 
     void EnvShutdown();

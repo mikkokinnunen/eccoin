@@ -21,10 +21,11 @@
 #include "db.h"
 
 #include "addrman.h"
+#include "args.h"
 #include "crypto/hash.h"
+#include "fs.h"
 #include "protocol.h"
 #include "util/util.h"
-#include "args.h"
 #include "util/utilstrencodings.h"
 
 #include <stdint.h>
@@ -33,9 +34,6 @@
 #include <sys/stat.h>
 #endif
 
-#include <boost/filesystem.hpp>
-#include <boost/thread.hpp>
-#include <boost/version.hpp>
 #include <thread>
 
 

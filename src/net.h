@@ -33,8 +33,9 @@
 #include "amount.h"
 #include "addrman.h"
 #include "addrdb.h"
-#include "compat.h"
 #include "bloom.h"
+#include "compat.h"
+#include "fs.h"
 #include "limitedmap.h"
 #include "netbase.h"
 #include "protocol.h"
@@ -48,7 +49,6 @@
 #include <arpa/inet.h>
 #endif
 
-#include <boost/filesystem/path.hpp>
 #include <boost/signals2/signal.hpp>
 
 class CNode;

@@ -53,8 +53,6 @@
 #include <map>
 #include <thread>
 #include <string>
-#include <boost/foreach.hpp>
-#include <boost/range/adaptor/reversed.hpp>
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1415,7 +1413,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
 
         // Allow whitelisted peers to send data other than blocks in blocks only
         // mode if whitelistrelay is true
-        if (pfrom->fWhitelisted && gArgs.GetBoolArg("-whitelistrelay", DEFAULT_WHITELISTRELAY)) 
+        if (pfrom->fWhitelisted && gArgs.GetBoolArg("-whitelistrelay", DEFAULT_WHITELISTRELAY))
         {
             fBlocksOnly = false;
         }
@@ -1457,7 +1455,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
                     // will then ask for the blocks we need.
                     connman.PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, pnetMan->getChainActive()->chainActive.GetLocator(pnetMan->getChainActive()->pindexBestHeader), inv.hash));
                     CNodeState *nodestate = State(pfrom->GetId());
-                    if (CanDirectFetch(chainparams.GetConsensus()) && nodestate->nBlocksInFlight < MAX_BLOCKS_IN_TRANSIT_PER_PEER) 
+                    if (CanDirectFetch(chainparams.GetConsensus()) && nodestate->nBlocksInFlight < MAX_BLOCKS_IN_TRANSIT_PER_PEER)
                     {
                         vToFetch.push_back(inv);
                         // Mark block as in flight already, even though the actual "getdata" message only goes out
@@ -1862,7 +1860,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
             //if we can get the transaction we have already processed it so it is safe to call CheckTransactionANS here
             CValidationState state;
             if(CheckServiceTransaction(pstx, tx, state))
-            {                
+            {
                 ProcessServiceCommand(pstx, tx, state);
                 RelayServiceTransaction(pstx, connman);
             }
@@ -1923,7 +1921,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
 
         LOCK(cs_main);
 
-        if (nCount == 0) 
+        if (nCount == 0)
         {
             // Nothing interesting. Stop asking this peers for more headers.
             return true;
@@ -1949,7 +1947,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
         if (pindexLast)
             UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
-        if (nCount == MAX_HEADERS_RESULTS && pindexLast) 
+        if (nCount == MAX_HEADERS_RESULTS && pindexLast)
         {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
@@ -2006,7 +2004,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
                     LogPrint("net", "Downloading blocks toward %s (%d) via headers direct fetch\n",
                             pindexLast->GetBlockHash().ToString(), pindexLast->nHeight);
                 }
-                if (vGetData.size() > 0) 
+                if (vGetData.size() > 0)
                 {
                     connman.PushMessage(pfrom, msgMaker.Make(NetMsgType::GETDATA, vGetData));
                 }
@@ -2712,7 +2710,7 @@ bool SendMessages(CNode *pto, CConnman &connman, const std::atomic<bool> &interr
 
     //
     // Message: inventory
-    //   
+    //
     std::vector<CInv> vInv;
     {
         LOCK(pto->cs_inventory);
@@ -2751,7 +2749,7 @@ bool SendMessages(CNode *pto, CConnman &connman, const std::atomic<bool> &interr
         }
 
         // Determine transactions to relay
-        if (fSendTrickle) 
+        if (fSendTrickle)
         {
             // Produce a vector with all candidates for sending
             std::vector<std::set<uint256>::iterator> vInvTx;
@@ -2805,7 +2803,7 @@ bool SendMessages(CNode *pto, CConnman &connman, const std::atomic<bool> &interr
         if(!pto->setInventoryStxToSend.empty())
         {
             std::vector<std::set<uint256>::iterator> vInvStx;
-            for (std::set<uint256>::iterator it = pto->setInventoryStxToSend.begin(); it != pto->setInventoryStxToSend.end(); it++) 
+            for (std::set<uint256>::iterator it = pto->setInventoryStxToSend.begin(); it != pto->setInventoryStxToSend.end(); it++)
             {
                 vInvStx.push_back(it);
             }

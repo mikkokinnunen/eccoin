@@ -28,6 +28,7 @@
 #include "crypto/common.h"
 #include "crypto/hash.h"
 #include "chain/tx.h"
+#include "fs.h"
 #include "scheduler.h"
 #include "ui_interface.h"
 #include "util/utilstrencodings.h"
@@ -46,7 +47,6 @@
 #include <miniupnpc/upnperrors.h>
 #endif
 
-#include <boost/filesystem.hpp>
 #include <memory>
 #include <thread>
 
