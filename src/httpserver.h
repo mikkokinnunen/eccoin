@@ -22,7 +22,7 @@
 
 #include <string>
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 

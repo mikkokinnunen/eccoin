@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 
-#include <boost/thread.hpp>
+#include <thread>
 
 #ifdef DEBUG_LOCKCONTENTION
 void PrintLockContention(const char* pszName, const char* pszFile, int nLine)
@@ -74,7 +74,7 @@ typedef std::vector<std::pair<void*, CLockLocation> > LockStack;
 
 static boost::mutex dd_mutex;
 static std::map<std::pair<void*, void*>, LockStack> lockorders;
-static boost::thread_specific_ptr<LockStack> lockstack;
+static std::thread_specific_ptr<LockStack> lockstack;
 
 
 static void potential_deadlock_detected(const std::pair<void*, void*>& mismatch, const LockStack& s1, const LockStack& s2)

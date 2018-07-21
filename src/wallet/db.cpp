@@ -36,6 +36,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
 #include <boost/version.hpp>
+#include <thread>
 
 
 unsigned int nWalletDBUpdated;
@@ -90,7 +91,7 @@ bool CDBEnv::Open(const boost::filesystem::path& pathIn)
     if (fDbEnvInit)
         return true;
 
-    boost::this_thread::interruption_point();
+    //boost::this_thread::interruption_point();
 
     strPath = pathIn.string();
     boost::filesystem::path pathLogDir = pathIn / "database";
@@ -135,7 +136,7 @@ void CDBEnv::MakeMock()
     if (fDbEnvInit)
         throw std::runtime_error("CDBEnv::MakeMock: Already initialized");
 
-    boost::this_thread::interruption_point();
+    //boost::this_thread::interruption_point();
 
     LogPrint("db", "CDBEnv::MakeMock\n");
 

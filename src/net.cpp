@@ -47,8 +47,8 @@
 #endif
 
 #include <boost/filesystem.hpp>
-#include <boost/thread.hpp>
 #include <memory>
+#include <thread>
 
 #include <cmath>
 
@@ -2253,7 +2253,7 @@ bool CConnman::BindListenPort(const CService &addrBind, std::string &strError,
     return true;
 }
 
-void Discover(boost::thread_group &threadGroup) {
+void Discover() {
     if (!fDiscover) {
         return;
     }

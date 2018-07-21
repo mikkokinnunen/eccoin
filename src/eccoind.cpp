@@ -51,7 +51,7 @@
  */
 
 
-void WaitForShutdown(boost::thread_group* threadGroup)
+void WaitForShutdown()
 {
     bool fShutdown = ShutdownRequested();
     // Tell the main threads to shutdown.
@@ -60,11 +60,7 @@ void WaitForShutdown(boost::thread_group* threadGroup)
         MilliSleep(200);
         fShutdown = ShutdownRequested();
     }
-    if (threadGroup)
-    {
-        Interrupt(*threadGroup);
-        threadGroup->join_all();
-    }
+    Interrupt();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -73,8 +69,6 @@ void WaitForShutdown(boost::thread_group* threadGroup)
 //
 bool AppInit(int argc, char* argv[])
 {
-    boost::thread_group threadGroup;
-    CScheduler scheduler;
 
     bool fRet = false;
 
@@ -171,7 +165,7 @@ bool AppInit(int argc, char* argv[])
         InitLogging();
         InitParameterInteraction();
         GenerateNetworkTemplates();
-        fRet = AppInit2(threadGroup, scheduler);
+        fRet = AppInit2();
     }
     catch (const std::exception& e)
     {
@@ -184,12 +178,12 @@ bool AppInit(int argc, char* argv[])
 
     if (!fRet)
     {
-        Interrupt(threadGroup);
+        Interrupt();
         // threadGroup.join_all(); was left out intentionally here, because we didn't re-test all of
         // the startup-failure cases to make sure they don't result in a hang due to some
         // thread-blocking-waiting-for-another-thread-during-startup case
     } else {
-        WaitForShutdown(&threadGroup);
+        WaitForShutdown();
     }
     Shutdown();
 

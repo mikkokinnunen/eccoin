@@ -51,6 +51,6 @@ struct CBlockTemplate
 
 std::unique_ptr<CBlockTemplate> CreateNewBlock(CWallet* pwallet, bool fProofOfStake);
 
-extern boost::thread_group* minerThreads;
+extern std::vector<std::thread> minerThreads;
 
 #endif // NOVACOIN_MINER_H

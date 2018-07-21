@@ -39,8 +39,8 @@
 #include "net.h"
 #include "policy/policy.h"
 
-#include <boost/thread.hpp>
 #include <openssl/sha.h>
+#include <thread>
 #include <queue>
 
 extern CWallet* pwalletMain;
@@ -718,7 +718,7 @@ void EccMinter(CWallet *pwallet)
             CheckWork(spblock, *pwalletMain, reservekey);
             SetThreadPriority(THREAD_PRIORITY_LOWEST);
         }
-        MilliSleep(1000); // 1 second delay
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // 1 second delay
         continue;
     }
 }
@@ -726,16 +726,18 @@ void EccMinter(CWallet *pwallet)
 
 
 
-boost::thread_group* minerThreads = nullptr;
+std::vector<std::thread> minerThreads;
 
 void ThreadMiner(void* parg, bool shutdownOnly)
 {
 
-    if (minerThreads != nullptr)
+    if (minerThreads.size() != 0)
     {
-        minerThreads->interrupt_all();
-        delete minerThreads;
-        minerThreads = nullptr;
+        std::vector<std::thread>::iterator iter;
+        for(iter = minerThreads.begin(); iter != minerThreads.end(); iter++)
+        {
+            (*iter).join();
+        }
         LogPrintf("CPUMiner stopped for proof-of-%s\n", "stake");
         return;
     }
@@ -745,19 +747,20 @@ void ThreadMiner(void* parg, bool shutdownOnly)
         return;
     }
 
-    minerThreads = new boost::thread_group();
-
     CWallet* pwallet = (CWallet*)parg;
     try
     {
-        minerThreads->create_thread(boost::bind(&EccMinter, pwallet));
+        minerThreads.push_back(std::thread((boost::bind(&EccMinter, pwallet))));
     }
-    catch (std::exception& e) {
+    catch (std::exception& e) 
+    {
         PrintException(&e, "ThreadECCMinter()");
-    } catch (...) {
+    } 
+    catch (...) 
+    {
         PrintException(NULL, "ThreadECCMinter()");
     }
     nHPSTimerStart = 0;
-        dHashesPerSec = 0;
+    dHashesPerSec = 0;
     LogPrintf("ThreadECCMinter exiting \n");
 }

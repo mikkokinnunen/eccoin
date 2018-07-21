@@ -51,7 +51,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <boost/thread.hpp>
+#include <thread>
 #include <string>
 #include <boost/foreach.hpp>
 #include <boost/range/adaptor/reversed.hpp>

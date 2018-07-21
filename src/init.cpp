@@ -75,6 +75,7 @@
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
+#include <thread>
 
 bool fShutdown = false;
 CWallet* pwalletMain = NULL;
@@ -176,17 +177,23 @@ public:
 
 std::unique_ptr<CCoinsViewDB> pcoinsdbview;
 std::unique_ptr<CCoinsViewErrorCatcher> pcoinscatcher;
-static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
+static std::unique_ptr<ECCVerifyHandle> globalVerifyHandle;
 
-void Interrupt(boost::thread_group& threadGroup)
+CScheduler scheduler;
+static std::vector<std::thread> threadGroup;
+
+void Interrupt()
 {
     fShutdown = true;
     InterruptHTTPServer();
     InterruptHTTPRPC();
     InterruptRPC();
-    InterruptREST();
+    //InterruptREST();
     InterruptTorControl();
-    threadGroup.interrupt_all();
+    if (g_connman)
+    {
+        g_connman->Interrupt();
+    }
 }
 
 void Shutdown()
@@ -205,7 +212,7 @@ void Shutdown()
     mempool.AddTransactionsUpdated(1);
 
     StopHTTPRPC();
-    StopREST();
+    //StopREST();
     StopRPC();
     StopHTTPServer();
 
@@ -617,7 +624,7 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
  *  Ensure that Bitcoin is running in a usable environment with all
  *  necessary library support.
  */
-bool InitSanityCheck(void)
+bool InitSanityCheck()
 {
     if(!ECC_InitSanityCheck()) {
         InitError("Elliptic curve cryptography sanity check failure. Aborting.");
@@ -629,7 +636,7 @@ bool InitSanityCheck(void)
     return true;
 }
 
-bool AppInitServers(boost::thread_group& threadGroup)
+bool AppInitServers()
 {
     RPCServer::OnStopped(&OnRPCStopped);
     RPCServer::OnPreCommand(&OnRPCPreCommand);
@@ -639,8 +646,8 @@ bool AppInitServers(boost::thread_group& threadGroup)
         return false;
     if (!StartHTTPRPC())
         return false;
-    if (gArgs.GetBoolArg("-rest", DEFAULT_REST_ENABLE) && !StartREST())
-        return false;
+    //if (gArgs.GetBoolArg("-rest", DEFAULT_REST_ENABLE) && !StartREST())
+    //    return false;
     if (!StartHTTPServer())
         return false;
     return true;
@@ -751,7 +758,7 @@ void GenerateNetworkTemplates()
 /** Initialize bitcoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
+bool AppInit2()
 {
     // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -1032,14 +1039,17 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     std::ostringstream strErrors;
 
     LogPrintf("Using %u threads for script verification\n", nScriptCheckThreads);
-    if (nScriptCheckThreads) {
+    if (nScriptCheckThreads)
+    {
         for (int i=0; i<nScriptCheckThreads-1; i++)
-            threadGroup.create_thread(&ThreadScriptCheck);
+        {
+            threadGroup.push_back(std::thread(&ThreadScriptCheck));
+        }
     }
 
     // Start the lightweight task scheduler thread
-    CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
-    threadGroup.create_thread(boost::bind(&TraceThread<CScheduler::Function>, "scheduler", serviceLoop));
+    CScheduler::Function serviceLoop = std::bind(&CScheduler::serviceQueue, &scheduler);
+    threadGroup.push_back(std::thread(std::bind(&TraceThread<CScheduler::Function>, "scheduler", serviceLoop)));
 
     /* Start the RPC server already.  It will be started in "warmup" mode
      * and not really process calls already (but it will signify connections
@@ -1049,7 +1059,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (fServer)
     {
         uiInterface.InitMessage.connect(SetRPCWarmupStatus);
-        if (!AppInitServers(threadGroup))
+        if (!AppInitServers())
             return InitError(_("Unable to start HTTP server. See debug log for details."));
     }
 
@@ -1460,7 +1470,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         for (auto const& strFile: gArgs.GetArgs("-loadblock"))
             vImportFiles.push_back(strFile);
     }
-    threadGroup.create_thread(boost::bind(&ThreadImport, vImportFiles));
+    threadGroup.push_back(std::thread(std::bind(&ThreadImport, vImportFiles)));
     /// THIS FOR LOOP IS STUCK FOREVER BECAUSE CHAIN TIP IS NEVER ACTIVATED
     if (pnetMan->getChainActive()->chainActive.Tip() == NULL)
     {
@@ -1488,9 +1498,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("mapAddressBook.size() = %u\n",  pwalletMain ? pwalletMain->mapAddressBook.size() : 0);
 
     if (gArgs.GetBoolArg("-listenonion", DEFAULT_LISTEN_ONION))
-        StartTorControl(threadGroup, scheduler);
+        StartTorControl();
 
-    Discover(threadGroup);
+    Discover();
 
     // Map ports with UPnP
     MapPort(gArgs.GetBoolArg("-upnp", DEFAULT_UPNP));
@@ -1535,10 +1545,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         pwalletMain->ReacceptWalletTransactions();
 
         // Run a thread to flush wallet periodically
-        threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
+        threadGroup.push_back(std::thread(std::bind(&ThreadFlushWalletDB, std::ref(pwalletMain->strWalletFile))));
     }
 
     return !fRequestShutdown;
 }
-
-

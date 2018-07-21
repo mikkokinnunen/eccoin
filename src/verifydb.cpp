@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/thread.hpp>
+#include <thread>
 
 #include "verifydb.h"
 #include "main.h"
@@ -56,7 +56,7 @@ bool CVerifyDB::VerifyDB(const CNetworkTemplate& chainparams, CCoinsView *coinsv
     CValidationState state;
     for (CBlockIndex* pindex = pnetMan->getChainActive()->chainActive.Tip(); pindex && pindex->pprev; pindex = pindex->pprev)
     {
-        boost::this_thread::interruption_point();
+        //boost::this_thread::interruption_point();
         uiInterface.ShowProgress(_("Verifying blocks..."), std::max(1, std::min(99, (int)(((double)(pnetMan->getChainActive()->chainActive.Height() - pindex->nHeight)) / (double)nCheckDepth * (nCheckLevel >= 4 ? 50 : 100)))));
         if (pindex->nHeight < pnetMan->getChainActive()->chainActive.Height()-nCheckDepth)
             break;
@@ -102,7 +102,7 @@ bool CVerifyDB::VerifyDB(const CNetworkTemplate& chainparams, CCoinsView *coinsv
     if (nCheckLevel >= 4) {
         CBlockIndex *pindex = pindexState;
         while (pindex != pnetMan->getChainActive()->chainActive.Tip()) {
-            boost::this_thread::interruption_point();
+            //boost::this_thread::interruption_point();
             uiInterface.ShowProgress(_("Verifying blocks..."), std::max(1, std::min(99, 100 - (int)(((double)(pnetMan->getChainActive()->chainActive.Height() - pindex->nHeight)) / (double)nCheckDepth * 50))));
             pindex = pnetMan->getChainActive()->chainActive.Next(pindex);
             CBlock block;

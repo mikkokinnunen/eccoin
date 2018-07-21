@@ -468,17 +468,21 @@ bool InitHTTPServer()
     return true;
 }
 
-boost::thread threadHTTP;
+std::thread threadHTTP;
+std::future<bool> threadResult;
+static std::vector<std::thread> g_thread_http_workers;
 
 bool StartHTTPServer()
 {
     LogPrint("http", "Starting HTTP server\n");
     int rpcThreads = std::max((long)gArgs.GetArg("-rpcthreads", DEFAULT_HTTP_THREADS), 1L);
     LogPrintf("HTTP: starting %d worker threads\n", rpcThreads);
-    threadHTTP = boost::thread(boost::bind(&ThreadHTTP, eventBase, eventHTTP));
+    threadHTTP = std::thread(std::bind(&ThreadHTTP, eventBase, eventHTTP));
 
     for (int i = 0; i < rpcThreads; i++)
-        boost::thread(boost::bind(&HTTPWorkQueueRun, workQueue));
+    {
+        g_thread_http_workers.emplace_back(&HTTPWorkQueueRun, workQueue);
+    }
     return true;
 }
 
@@ -513,11 +517,8 @@ void StopHTTPServer()
         // master that appears to be solved, so in the future that solution
         // could be used again (if desirable).
         // (see discussion in https://github.com/bitcoin/bitcoin/pull/6990)
-#if BOOST_VERSION >= 105000
-        if (!threadHTTP.try_join_for(boost::chrono::milliseconds(2000))) {
-#else
-        if (!threadHTTP.timed_join(boost::posix_time::milliseconds(2000))) {
-#endif
+        if (threadResult.valid() && threadResult.wait_for(std::chrono::milliseconds(2000)) == std::future_status::timeout)
+        {
             LogPrintf("HTTP event loop did not exit within allotted time, sending loopbreak\n");
             event_base_loopbreak(eventBase);
             threadHTTP.join();

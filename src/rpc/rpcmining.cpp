@@ -126,7 +126,7 @@ UniValue getgenerate(const UniValue& params, bool fHelp)
         );
 
     LOCK(cs_main);
-    return minerThreads != NULL;
+    return !minerThreads.empty();
 }
 
 UniValue generate(const UniValue& params, bool fHelp)

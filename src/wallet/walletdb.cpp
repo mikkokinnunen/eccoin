@@ -34,7 +34,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 
 static uint64_t nAccountingEntryNumber = 0;
 
@@ -863,7 +863,7 @@ void ThreadFlushWalletDB(const std::string& strFile)
 
                 if (nRefCount == 0)
                 {
-                    boost::this_thread::interruption_point();
+                    //std::this_thread::interruption_point();
                     std::map<std::string, int>::iterator mi = bitdb.mapFileUseCount.find(strFile);
                     if (mi != bitdb.mapFileUseCount.end())
                     {

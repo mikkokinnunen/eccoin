@@ -32,7 +32,7 @@
 
 #include <stdint.h>
 
-#include <boost/thread.hpp>
+#include <thread>
 
 static const char DB_COIN = 'C';
 static const char DB_COINS = 'c';
@@ -68,7 +68,7 @@ struct CoinEntry {
 }
 
 
-CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true) 
+CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true)
 {
 }
 
@@ -215,7 +215,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
     // Load mapBlockIndex
     while (pcursor->Valid())
     {
-        boost::this_thread::interruption_point();
+        //boost::this_thread::interruption_point();
         std::pair<char, uint256> key;
         if (pcursor->GetKey(key) && key.first == DB_BLOCK_INDEX)
         {
