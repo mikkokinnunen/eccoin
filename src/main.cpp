@@ -61,12 +61,6 @@
 #include <random>
 #include <sstream>
 #include <random>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/math/distributions/poisson.hpp>
-#include <boost/thread.hpp>
-#include <boost/foreach.hpp>
 
 /**
  * Global state
@@ -533,7 +527,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
             if (pfMissingInputs)
             {
                 *pfMissingInputs = false;
-                BOOST_FOREACH (const CTxIn txin, tx.vin)
+                for (const CTxIn txin : tx.vin)
                 {
                     // At this point we begin to collect coins that are potential candidates for uncaching because as
                     // soon as we make the call below to view.HaveCoin() any missing coins will be pulled into cache.
@@ -642,10 +636,10 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
         // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
         // be annoying or make others' transactions take longer to confirm.
         static const double maxFeeCutoff =
-                    boost::lexical_cast<double>(gArgs.GetArg("-maxlimitertxfee", DEFAULT_MAXLIMITERTXFEE));
+                    atof(gArgs.GetArg("-maxlimitertxfee", DEFAULT_MAXLIMITERTXFEE).c_str());
                 // starting value for feeCutoff in satoshi per byte
                 static const double initFeeCutoff =
-                    boost::lexical_cast<double>(gArgs.GetArg("-minlimitertxfee", DEFAULT_MINLIMITERTXFEE));
+                    atof(gArgs.GetArg("-minlimitertxfee", DEFAULT_MINLIMITERTXFEE).c_str());
                 static const int nLimitFreeRelay = gArgs.GetArg("-limitfreerelay", DEFAULT_LIMITFREERELAY);
 
                 // get current memory pool size

@@ -19,13 +19,9 @@
  */
 
 #include <boost/thread.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <atomic>
 #include <sstream>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/math/distributions/poisson.hpp>
 
 #include "checkqueue.h"
 #include "processblock.h"
@@ -605,8 +601,9 @@ void CheckForkWarningConditionsOnNewFork(CBlockIndex* pindexNewForkTip)
         nHeight = nTargetHeight;
 
         // Connect new blocks.
-        BOOST_REVERSE_FOREACH(CBlockIndex *pindexConnect, vpindexToConnect)
+        for(auto i = vpindexToConnect.rbegin(); i != vpindexToConnect.rend(); i++)
         {
+            CBlockIndex *pindexConnect = *i;
             if (!ConnectTip(state, chainparams, pindexConnect, pindexConnect == pindexMostWork ? pblock : NULL, connectTrace))
             {
                 if (state.IsInvalid())

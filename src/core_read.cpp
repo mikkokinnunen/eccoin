@@ -29,10 +29,9 @@
 #include "version.h"
 
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/assign/list_of.hpp>
+#include <cctype>
 
 CScript ParseScript(const std::string& s)
 {
@@ -66,22 +65,22 @@ CScript ParseScript(const std::string& s)
     {
         if (w->empty())
         {
-            // Empty string, ignore. (boost::split given '' will return one word)
+            // Empty string, ignore. (std::split given '' will return one word)
         }
-        else if (all(*w, boost::algorithm::is_digit()) ||
-            (boost::algorithm::starts_with(*w, "-") && all(std::string(w->begin()+1, w->end()), boost::algorithm::is_digit())))
+        else if (std::all_of(w->begin(), w->end(), ::isdigit) ||
+            (w->front() == '-' && w->size() > 1 && std::all_of(w->begin()+1, w->end(), ::isdigit)))
         {
             // Number
             int64_t n = atoi64(*w);
             result << n;
         }
-        else if (boost::algorithm::starts_with(*w, "0x") && (w->begin()+2 != w->end()) && IsHex(std::string(w->begin()+2, w->end())))
+        else if (w->substr(0,2) == "0x" && w->size() >2 && IsHex(std::string(w->begin()+2, w->end())))
         {
             // Raw hex data, inserted NOT pushed onto stack:
             std::vector<unsigned char> raw = ParseHex(std::string(w->begin()+2, w->end()));
             result.insert(result.end(), raw.begin(), raw.end());
         }
-        else if (w->size() >= 2 && boost::algorithm::starts_with(*w, "'") && boost::algorithm::ends_with(*w, "'"))
+        else if (w->size() >= 2 && w->front() == '\'' && w->back() == '\'')
         {
             // Single-quoted string, pushed as data. NOTE: this is poor-man's
             // parsing, spaces/tabs/newlines in single-quoted strings won't work.

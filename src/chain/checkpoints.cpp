@@ -27,7 +27,6 @@
 #include "init.h"
 
 #include <stdint.h>
-#include <boost/foreach.hpp>
 
 namespace Checkpoints {
 
@@ -86,9 +85,9 @@ namespace Checkpoints {
     {
         const MapCheckpoints& checkpoints = data.mapCheckpoints;
 
-        BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, checkpoints)
+        for(auto i = checkpoints.rbegin(); i != checkpoints.rend(); i++)
         {
-            const uint256& hash = i.second;
+            const uint256& hash = i->second;
             BlockMap::const_iterator t = pnetMan->getChainActive()->mapBlockIndex.find(hash);
             if (t != pnetMan->getChainActive()->mapBlockIndex.end())
                 return t->second;

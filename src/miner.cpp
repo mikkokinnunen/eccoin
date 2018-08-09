@@ -45,7 +45,7 @@
 
 extern CWallet* pwalletMain;
 
-typedef boost::tuple<double, double, CTransaction*> TxPriority;
+typedef std::tuple<double, double, CTransaction*> TxPriority;
 
 uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockSize = 0;
@@ -84,7 +84,7 @@ public:
 };
 
 // We want to sort transactions by priority and fee, so:
-typedef boost::tuple<double, double, CTransaction*> TxPriority;
+typedef std::tuple<double, double, CTransaction*> TxPriority;
 class TxPriorityCompare
 {
     bool byFee;
@@ -94,15 +94,15 @@ public:
     {
         if (byFee)
         {
-            if (a.get<1>() == b.get<1>())
-                return a.get<0>() < b.get<0>();
-            return a.get<1>() < b.get<1>();
+            if (std::get<1>(a) == std::get<1>(b))
+                return std::get<0>(a) < std::get<0>(b);
+            return std::get<1>(a) < std::get<1>(b);
         }
         else
         {
-            if (a.get<0>() == b.get<0>())
-                return a.get<1>() < b.get<1>();
-            return a.get<0>() < b.get<0>();
+            if (std::get<0>(a) == std::get<0>(b))
+                return std::get<1>(a) < std::get<1>(b);
+            return std::get<0>(a) < std::get<0>(b);
         }
     }
 };
@@ -645,11 +645,11 @@ void ThreadMiner(void* parg, bool shutdownOnly)
     {
         minerThreads.push_back(std::thread((boost::bind(&EccMinter, pwallet))));
     }
-    catch (std::exception& e) 
+    catch (std::exception& e)
     {
         PrintException(&e, "ThreadECCMinter()");
-    } 
-    catch (...) 
+    }
+    catch (...)
     {
         PrintException(NULL, "ThreadECCMinter()");
     }
