@@ -72,11 +72,14 @@ bool startsWithCaseInsensitive(std::string mainStr, std::string toMatch)
 	std::transform(mainStr.begin(), mainStr.end(), mainStr.begin(), ::tolower);
 	// Convert toMatch to lower case
 	std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), ::tolower);
- 
 	if(mainStr.find(toMatch) == 0)
+    {
 		return true;
+    }
 	else
+    {
 		return false;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -142,7 +145,7 @@ bool AppInit(int argc, char* argv[])
         bool fCommandLine = false;
         for (int i = 1; i < argc; i++)
         {
-            if (!IsSwitchChar(argv[i][0]) && startsWithCaseInsensitive(argv[i], "ECC:"))
+            if (!IsSwitchChar(argv[i][0]) && !startsWithCaseInsensitive(argv[i], "ECC:"))
             {
                 fCommandLine = true;
             }
@@ -186,7 +189,7 @@ bool AppInit(int argc, char* argv[])
     catch (const std::exception& e)
     {
         PrintExceptionContinue(&e, "AppInit()");
-    } 
+    }
     catch (...)
     {
         PrintExceptionContinue(NULL, "AppInit()");
