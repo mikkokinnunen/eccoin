@@ -25,7 +25,6 @@
 #include <sstream>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <boost/math/distributions/poisson.hpp>
 
 #include "checkqueue.h"
@@ -234,7 +233,7 @@ bool ProcessNewBlock(CValidationState& state, const CNetworkTemplate& chainparam
         LOCK(cs_main);
         bool fRequested = MarkBlockAsReceived(pblock->GetHash());
         fRequested |= fForceProcessing;
-        if (!checked) 
+        if (!checked)
         {
             LogPrintf("%s \n", state.GetRejectReason().c_str());
             return error("%s: CheckBlock FAILED", __func__);
@@ -606,7 +605,7 @@ void CheckForkWarningConditionsOnNewFork(CBlockIndex* pindexNewForkTip)
         nHeight = nTargetHeight;
 
         // Connect new blocks.
-        BOOST_REVERSE_FOREACH(CBlockIndex *pindexConnect, vpindexToConnect) 
+        BOOST_REVERSE_FOREACH(CBlockIndex *pindexConnect, vpindexToConnect)
         {
             if (!ConnectTip(state, chainparams, pindexConnect, pindexConnect == pindexMostWork ? pblock : NULL, connectTrace))
             {
@@ -638,7 +637,7 @@ void CheckForkWarningConditionsOnNewFork(CBlockIndex* pindexNewForkTip)
         }
     }
 
-    if (fBlocksDisconnected) 
+    if (fBlocksDisconnected)
     {
         mempool.removeForReorg(pnetMan->getChainActive()->pcoinsTip.get(), pnetMan->getChainActive()->chainActive.Tip()->nHeight + 1, STANDARD_LOCKTIME_VERIFY_FLAGS);
         LimitMempoolSize(mempool, gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000, gArgs.GetArg("-mempoolexpiry", DEFAULT_MEMPOOL_EXPIRY) * 60 * 60);
@@ -669,7 +668,7 @@ bool ActivateBestChain(CValidationState &state, const CNetworkTemplate& chainpar
         const CBlockIndex *pindexFork;
         bool fInitialDownload;
         {
-            LOCK(cs_main);            
+            LOCK(cs_main);
 
             // Destructed before cs_main is unlocked.
             ConnectTrace connectTrace(mempool);
@@ -702,16 +701,16 @@ bool ActivateBestChain(CValidationState &state, const CNetworkTemplate& chainpar
         {
             uiInterface.NotifyBlockTip(fInitialDownload, pindexNewTip);
 
-            if (!fInitialDownload) 
+            if (!fInitialDownload)
             {
                 // Find the hashes of all blocks that weren't previously in the best chain.
                 std::vector<uint256> vHashes;
                 CBlockIndex *pindexToAnnounce = pindexNewTip;
-                while (pindexToAnnounce != pindexFork) 
+                while (pindexToAnnounce != pindexFork)
                 {
                     vHashes.push_back(pindexToAnnounce->GetBlockHash());
                     pindexToAnnounce = pindexToAnnounce->pprev;
-                    if (vHashes.size() == MAX_BLOCKS_TO_ANNOUNCE) 
+                    if (vHashes.size() == MAX_BLOCKS_TO_ANNOUNCE)
                     {
                         // Limit announcements in case of a huge reorganization.
                         // Rely on the peer's synchronization mechanism in that case.
@@ -721,13 +720,13 @@ bool ActivateBestChain(CValidationState &state, const CNetworkTemplate& chainpar
                 // Relay inventory, but don't relay old inventory during initial block
                 // download.
                 const int nNewHeight = pindexNewTip->nHeight;
-                g_connman->ForEachNode([nNewHeight, &vHashes](CNode *pnode) 
+                g_connman->ForEachNode([nNewHeight, &vHashes](CNode *pnode)
                 {
                     if (nNewHeight > (pnode->nStartingHeight != -1
                                           ? pnode->nStartingHeight - 2000
-                                          : 0)) 
+                                          : 0))
                     {
-                        for (const uint256 &hash : boost::adaptors::reverse(vHashes)) 
+                        for (const uint256 &hash : boost::adaptors::reverse(vHashes))
                         {
                             pnode->PushBlockHash(hash);
                         }
@@ -735,7 +734,7 @@ bool ActivateBestChain(CValidationState &state, const CNetworkTemplate& chainpar
                 });
                 g_connman->WakeMessageHandler();
                 // Notify external listeners about the new tip.
-                if (!vHashes.empty()) 
+                if (!vHashes.empty())
                 {
                     GetMainSignals().UpdatedBlockTip(pindexNewTip, pindexFork, fInitialDownload);
                 }
@@ -1506,7 +1505,7 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
                 return error("DisconnectBlock(): transaction and undo data inconsistent");
             }
             for (unsigned int j = tx.vin.size(); j-- > 0;)
-            {                
+            {
                 const COutPoint &out = tx.vin[j].prevout;
                 int res = ApplyTxInUndo(std::move(txundo.vprevout[j]), view, out);
                 if (res == DISCONNECT_FAILED)
@@ -1614,4 +1613,3 @@ void removeImpossibleChainTips()
         LogPrintf("found %i impossible indexes and deleted them \n", deletionCount);
     }
 }
-

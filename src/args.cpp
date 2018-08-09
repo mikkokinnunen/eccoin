@@ -218,9 +218,9 @@ static fs::path pathCached;
 static fs::path pathCachedNetSpecific;
 static CCriticalSection csPathCached;
 
-boost::filesystem::path CArgsManager::GetConfigFile()
+fs::path CArgsManager::GetConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-conf", CONF_FILENAME));
+    fs::path pathConfigFile(GetArg("-conf", CONF_FILENAME));
     if (!pathConfigFile.is_complete())
         pathConfigFile = GetDataDir(false) / pathConfigFile;
 
@@ -230,10 +230,10 @@ boost::filesystem::path CArgsManager::GetConfigFile()
 void CArgsManager::ReadConfigFile()
 {
     init:
-    boost::filesystem::ifstream streamConfig(GetConfigFile());
+    fs::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
     {
-        boost::filesystem::path ConfPath = GetDefaultDataDir() / "eccoin.conf";
+        fs::path ConfPath = GetDefaultDataDir() / "eccoin.conf";
         FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
         fprintf(ConfFile, "maxconnections=100\n");
         fprintf(ConfFile, "rpcuser=yourusername\n");
