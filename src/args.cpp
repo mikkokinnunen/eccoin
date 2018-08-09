@@ -94,8 +94,19 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 #include <openssl/conf.h>
+#include <random>
 
 CArgsManager gArgs;
+static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+void gen_random_str(char *s)
+{
+    std::mt19937 randgen;
+    for (uint8_t i = 0; i < 32 ; ++i)
+    {
+        s[i] = alphanum[ randgen() % (sizeof(alphanum) - 1)];
+    }
+}
 
 /** Interpret string as boolean, for argument parsing */
 bool InterpretBool(const std::string& strValue)
@@ -233,11 +244,14 @@ void CArgsManager::ReadConfigFile()
     fs::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
     {
-        fs::path ConfPath = GetDefaultDataDir() / "eccoin.conf";
+        fs::path ConfPath = GetDataDir(false) / "eccoin.conf";
         FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
-        fprintf(ConfFile, "maxconnections=100\n");
         fprintf(ConfFile, "rpcuser=yourusername\n");
-        fprintf(ConfFile, "rpcpassword=yourpassword\n");
+        char randpass[32];
+        gen_random_str(randpass);
+        std::string strpass = std::string(randpass);
+        std::string passline = "rpcpassword=" + strpass + "\n";
+        fprintf(ConfFile, passline.c_str());
         fprintf(ConfFile, "rpcport=19119\n");
         fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
         fprintf(ConfFile, "rpcallowip=127.0.0.1\n");
