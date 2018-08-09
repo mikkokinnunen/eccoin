@@ -931,15 +931,6 @@ bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoins
             const Coin &coin = inputs.AccessCoin(prevout);
             assert(!coin.IsSpent());
 
-            CTransaction temptx;
-            uint256 hashblock;
-            if(!GetTransaction(prevout.hash, temptx, pnetMan->getActivePaymentNetwork()->GetConsensus(), hashblock, true))
-            {
-                return state.Invalid(false,
-                    REJECT_INVALID, "bad-txns-could-not-find-tx",
-                    "tried to spend coin we could not find");
-            }
-
             // If prev is coinbase or coinstake, check that it's matured
             if (coin.IsCoinBase() || tx.IsCoinStake())
             {
