@@ -3628,7 +3628,7 @@ bool CWallet::SelectCoinsMinConf(CAmount nTargetValue, unsigned int nSpendTime, 
             nValueRet += coin.first;
             return true;
         }
-        else if (n < nTargetValue + CENT)
+        else if (n < nTargetValue + pnetMan->getActivePaymentNetwork()->CENT())
         {
             vValue.push_back(coin);
             nTotalLower += n;
@@ -3664,13 +3664,13 @@ bool CWallet::SelectCoinsMinConf(CAmount nTargetValue, unsigned int nSpendTime, 
     int64_t nBest;
 
     ApproximateBestSubset(vValue, nTotalLower, nTargetValue, vfBest, nBest, 1000);
-    if (nBest != nTargetValue && nTotalLower >= nTargetValue + CENT)
-        ApproximateBestSubset(vValue, nTotalLower, nTargetValue + CENT, vfBest, nBest, 1000);
+    if (nBest != nTargetValue && nTotalLower >= nTargetValue + pnetMan->getActivePaymentNetwork()->CENT())
+        ApproximateBestSubset(vValue, nTotalLower, nTargetValue + pnetMan->getActivePaymentNetwork()->CENT(), vfBest, nBest, 1000);
 
     // If we have a bigger coin and (either the stochastic approximation didn't find a good solution,
     //                                   or the next bigger coin is closer), return the bigger coin
     if (coinLowestLarger.second.first &&
-        ((nBest != nTargetValue && nBest < nTargetValue + CENT) || coinLowestLarger.first <= nBest))
+        ((nBest != nTargetValue && nBest < nTargetValue + pnetMan->getActivePaymentNetwork()->CENT()) || coinLowestLarger.first <= nBest))
     {
         setCoinsRet.insert(coinLowestLarger.second);
         nValueRet += coinLowestLarger.first;
@@ -3914,7 +3914,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         // Set output amount
         if (txNew.vout.size() == 3)
         {
-            txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 / CENT) * CENT;
+            txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 / pnetMan->getActivePaymentNetwork()->CENT()) * pnetMan->getActivePaymentNetwork()->CENT();
             txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
         }
         else

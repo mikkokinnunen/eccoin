@@ -12,6 +12,9 @@
 
 extern CNetworkManager* pnetman;
 
+static const CAmount COIN = 100000000;
+static const CAmount CENT = 1000000;
+
 /** Basic testing setup.
  * This just configures logging and chain parameters.
  */

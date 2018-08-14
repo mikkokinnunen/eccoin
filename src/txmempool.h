@@ -28,6 +28,7 @@
 #include "amount.h"
 #include "coins.h"
 #include "chain/tx.h"
+#include "init.h"
 #include "random.h"
 #include "sync.h"
 
@@ -40,7 +41,7 @@
 class CAutoFile;
 class CBlockIndex;
 
-inline double AllowFreeThreshold() { return COIN * 144 / 250; }
+inline double AllowFreeThreshold() { return pnetMan->getActivePaymentNetwork()->COIN() * 144 / 250; }
 inline bool AllowFree(double dPriority)
 {
     // Large (in bytes) low-priority (new, small-coin) transactions

@@ -44,7 +44,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state)
         {
             return state.DoS(100, false, REJECT_INVALID, "bad-txns-vout-negative");
         }
-        if (txout.nValue > MAX_MONEY)
+        if (txout.nValue > pnetMan->getActivePaymentNetwork()->MAX_MONEY())
             return state.DoS(100, false, REJECT_INVALID, "bad-txns-vout-toolarge");
         nValueOut += txout.nValue;
         if (!MoneyRange(nValueOut))

@@ -22,6 +22,7 @@
 
 #include "services/ans.h"
 #include "base58.h"
+#include "init.h"
 #include "main.h"
 #include "rpcserver.h"
 #include "services/servicetx.h"
@@ -82,13 +83,13 @@ bool getRecordUnknownType(std::string strRecordName, CAnsRecord& record)
 */
 static CAmount CalcAnsFeeFromMonths(uint8_t months)
 {
-    return (months * 50) * COIN;
+    return (months * 50) * pnetMan->getActivePaymentNetwork()->COIN();
 }
 
 static void CreatePayment(const CTxDestination &address, CAmount nFeeRequired, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet)
 {
     CAmount curBalance = pwalletMain->GetBalance();
-    CAmount nValue = 1 * COIN;
+    CAmount nValue = 1 * pnetMan->getActivePaymentNetwork()->COIN();
     // Check amount
     if (nValue <= 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid amount");

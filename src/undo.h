@@ -21,7 +21,8 @@
 #ifndef BITCOIN_UNDO_H
 #define BITCOIN_UNDO_H
 
-#include "compressor.h" 
+#include "coins.h"
+#include "compressor.h"
 #include "chain/tx.h"
 #include "serialize.h"
 

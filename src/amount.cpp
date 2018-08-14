@@ -19,10 +19,11 @@
  */
 
 #include "amount.h"
+#include "init.h"
 
 #include "tinyformat.h"
 
-const std::string CURRENCY_UNIT = "BTC";
+const std::string CURRENCY_UNIT = "ECC";
 
 CFeeRate::CFeeRate(const CAmount& nFeePaid, size_t nSize)
 {
@@ -44,5 +45,5 @@ CAmount CFeeRate::GetFee(size_t nSize) const
 
 std::string CFeeRate::ToString() const
 {
-    return strprintf("%d.%08d %s/kB", nSatoshisPerK / COIN, nSatoshisPerK % COIN, CURRENCY_UNIT);
+    return strprintf("%d.%08d %s/kB", nSatoshisPerK / pnetMan->getActivePaymentNetwork()->COIN(), nSatoshisPerK % pnetMan->getActivePaymentNetwork()->COIN(), CURRENCY_UNIT);
 }

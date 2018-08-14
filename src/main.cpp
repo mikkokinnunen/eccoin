@@ -1832,35 +1832,32 @@ int generateMTRandom(unsigned int s, int range)
     return dist(gen);
 }
 
-static const int64_t nMinSubsidy = 1 * COIN;
-static const CAmount OLD_MAX_MONEY = 50000000000 * COIN;
-
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees, const int nHeight, uint256 prevHash)
 {
-    int64_t nSubsidy = 100000 * COIN;
+    int64_t nSubsidy = 100000 * pnetMan->getActivePaymentNetwork()->COIN();
 
     if(nHeight == 1)
     {
-        nSubsidy = 0.0099 * OLD_MAX_MONEY;
+        nSubsidy = 0.0099 * (2 * pnetMan->getActivePaymentNetwork()->MAX_MONEY());
         return nSubsidy + nFees;
     }
     else if(nHeight > 86400)	// will be blocked all the pow after CUTOFF_HEIGHT
     {
-        return nMinSubsidy + nFees;
+        return pnetMan->getActivePaymentNetwork()->COIN() + nFees;
     }
 
     std::string cseed_str = prevHash.ToString().substr(15,7);
     const char* cseed = cseed_str.c_str();
     long seed = hex2long(cseed);
-    nSubsidy += generateMTRandom(seed, 200000) * COIN;
+    nSubsidy += generateMTRandom(seed, 200000) * pnetMan->getActivePaymentNetwork()->COIN();
 
     return nSubsidy + nFees;
 }
 
 int64_t ValueFromAmountAsInt(int64_t amount)
 {
-    return amount / COIN;
+    return amount / pnetMan->getActivePaymentNetwork()->COIN();
 }
 
 const int YEARLY_BLOCKCOUNT = 700800;
@@ -1869,7 +1866,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int nHeight)
 {
     int64_t nRewardCoinYear = 2.5 * MAX_MINT_PROOF_OF_STAKE;
     int64_t CMS = pnetMan->getChainActive()->chainActive.Tip()->nMoneySupply;
-    if(CMS == MAX_MONEY)
+    if(CMS == pnetMan->getActivePaymentNetwork()->MAX_MONEY())
     {
         /// if we are already at max money supply limits (25 billion coins, we return 0 as no new coins are to be minted
         if (fDebug)
@@ -1881,12 +1878,12 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int nHeight)
     if (nHeight > 500000 && nHeight < 1005000)
     {
         int64_t nextMoney = (ValueFromAmountAsInt(CMS) + nRewardCoinYear) ;
-        if(nextMoney > MAX_MONEY)
+        if(nextMoney > pnetMan->getActivePaymentNetwork()->MAX_MONEY())
         {
-            int64_t difference = nextMoney - MAX_MONEY;
+            int64_t difference = nextMoney - pnetMan->getActivePaymentNetwork()->MAX_MONEY();
             nRewardCoinYear = nextMoney - difference;
         }
-        if(nextMoney == MAX_MONEY)
+        if(nextMoney == pnetMan->getActivePaymentNetwork()->MAX_MONEY())
         {
             nRewardCoinYear = 0;
         }
@@ -1898,18 +1895,18 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int nHeight)
         return nSubsidy;
     }
 
-    nRewardCoinYear = 25 * CENT; // 25%
+    nRewardCoinYear = 25 * pnetMan->getActivePaymentNetwork()->CENT(); // 25%
     int64_t nSubsidy = nCoinAge * nRewardCoinYear / 365;
     if(nHeight >= 1005000)
     {
         int64_t nextMoney = CMS + nSubsidy;
         // this conditional should only happen once
-        if(nextMoney > MAX_MONEY)
+        if(nextMoney > pnetMan->getActivePaymentNetwork()->MAX_MONEY())
         {
             /// CMS + subsidy = nextMoney
             /// nextMoney - MAX = difference and we should take this difference away from nSubsidy so nSubsidy stops at max money and doesnt go over
             /// credits go to cvargos for this fix
-            int64_t difference = (nextMoney - MAX_MONEY);
+            int64_t difference = (nextMoney - pnetMan->getActivePaymentNetwork()->MAX_MONEY());
             nSubsidy = nSubsidy - difference;
         }
     }

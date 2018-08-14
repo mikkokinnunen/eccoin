@@ -85,6 +85,8 @@ void CNetworkManager::ConstructLegacyNetworkTemplate()
     legacyTemplate->nMaxTipAge = 24 * 60 * 60;
     legacyTemplate->nStakeMaxAge = 60*60*24*84; //84 days
     legacyTemplate->nStakeMinAge = 60*60*2; // 2 hours
+    legacyTemplate->coin = 1000000;
+    legacyTemplate->cent = 10000;
 
     const char* pszTimestamp = "AP | Mar 2, 2014, 10.35 AM IST: China blames Uighur separatists for knife attack; 33 dead";
     CTransaction txNew;
@@ -215,6 +217,8 @@ void CNetworkManager::ConstructPaymentNetworkTemplate()
     paymentTemplate->nMaxTipAge = 24 * 60 * 60;
     paymentTemplate->nStakeMaxAge = 60*60*2; // 2 hours
     paymentTemplate->nStakeMinAge = 60*60*2; // 2 hours
+    paymentTemplate->coin = 100000000;
+    paymentTemplate->cent = 1000000;
 
     const char* pszTimestamp = "AP | Mar 2, 2014, 10.35 AM IST: China blames Uighur separatists for knife attack; 33 dead";
     CTransaction txNew;
@@ -292,6 +296,8 @@ void CNetworkManager::ConstructTetnet0Template()
     netManTestnetTemplate->nMaxTipAge = 24 * 60 * 60;
     netManTestnetTemplate->nStakeMaxAge = 60*60*24*84; //84 days
     netManTestnetTemplate->nStakeMinAge = 60*2; // 2 minutes
+    netManTestnetTemplate->coin = 1000000;
+    netManTestnetTemplate->cent = 10000;
 
     const char* pszTimestamp = "AP | Dec 3, 2017, Testing of new network manager begins";
     CTransaction txNew;

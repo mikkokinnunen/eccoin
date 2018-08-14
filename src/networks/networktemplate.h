@@ -81,12 +81,16 @@ public:
     CCheckpointData checkpointData;
     unsigned int nStakeMaxAge;
     unsigned int nStakeMinAge;
+    CAmount coin;
+    CAmount cent;
 
-
+    const CAmount COIN() const { return coin; }
+    const CAmount CENT() const { return cent; }
     const Consensus::Params& GetConsensus() const { return consensus; }
     const CMessageHeader::MessageMagic& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
     int GetRPCPort() const { return nRPCPort; }
+    const CAmount MAX_MONEY() const { return 25000000000 * coin; }
 
     const CBlock& GenesisBlock() const { return genesis; }
     /** Make miner wait to have peers to avoid wasting work */
@@ -113,7 +117,7 @@ public:
     int getpch1() const { return pchMessageStart[1]; }
     int getpch2() const { return pchMessageStart[2]; }
     int getpch3() const { return pchMessageStart[3]; }
-  
+
     CNetworkTemplate()
     {
 
@@ -149,6 +153,8 @@ public:
         this->checkpointData = param_netTemplate->Checkpoints();
         this->nStakeMaxAge = param_netTemplate->getStakeMaxAge();
         this->nStakeMinAge = param_netTemplate->getStakeMinAge();
+        this->coin = param_netTemplate->COIN();
+        this->cent = param_netTemplate->CENT();
 
     }
 };

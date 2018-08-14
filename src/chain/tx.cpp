@@ -104,7 +104,7 @@ uint256 CTxOut::GetHash() const
 
 std::string CTxOut::ToString() const
 {
-    return strprintf("CTxOut(nValue=%d.%08d, scriptPubKey=%s)", nValue / COIN, nValue % COIN, HexStr(scriptPubKey).substr(0, 30));
+    return strprintf("CTxOut(nValue=%d.%08d, scriptPubKey=%s)", nValue / pnetMan->getActivePaymentNetwork()->COIN(), nValue % pnetMan->getActivePaymentNetwork()->COIN(), HexStr(scriptPubKey).substr(0, 30));
 }
 
 uint256 CTransaction::GetHash() const
@@ -275,13 +275,13 @@ uint64_t CTransaction::GetCoinAge(uint64_t nCoinAge, bool byValue) const
             return false;  // Transaction timestamp violation
 
         int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-        bnCentSecond += arith_uint256(nValueIn) * (nTime-txPrev.nTime) / CENT;
+        bnCentSecond += arith_uint256(nValueIn) * (nTime-txPrev.nTime) / pnetMan->getActivePaymentNetwork()->CENT();
 
         if (fDebug && gArgs.GetBoolArg("-printcoinage", false))
             LogPrintf("coin age nValueIn=%d nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
     }
 
-    arith_uint256 bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);
+    arith_uint256 bnCoinDay = bnCentSecond / 100 / (24 * 60 * 60);
     if (fDebug && gArgs.GetBoolArg("-printcoinage", false))
         LogPrintf("coin age bnCoinDay=%s\n", bnCoinDay.ToString().c_str());
     nCoinAge = bnCoinDay.GetLow64();
@@ -322,13 +322,13 @@ bool CTransaction::GetCoinAge(uint64_t& nCoinAge) const
             return false;  // Transaction timestamp violation
 
         int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-        bnCentSecond += arith_uint256(nValueIn) * (nTime-txPrev.nTime) / CENT;
+        bnCentSecond += arith_uint256(nValueIn) * (nTime-txPrev.nTime) / pnetMan->getActivePaymentNetwork()->CENT();
 
         if (fDebug && gArgs.GetBoolArg("-printcoinage", false))
             LogPrintf("coin age nValueIn=%d nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
     }
 
-    arith_uint256 bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);
+    arith_uint256 bnCoinDay = bnCentSecond / 100 / (24 * 60 * 60);
     if (fDebug && gArgs.GetBoolArg("-printcoinage", false))
         LogPrintf("coin age bnCoinDay=%s\n", bnCoinDay.ToString().c_str());
     nCoinAge = bnCoinDay.GetLow64();

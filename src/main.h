@@ -25,6 +25,7 @@
 #include "chain/chain.h"
 #include "coins.h"
 #include "net.h"
+#include "init.h"
 #include "script/script_error.h"
 #include "sync.h"
 #include "versionbits.h"
@@ -202,6 +203,20 @@ extern ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS];
 void PruneBlockIndexCandidates();
 bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidationState& state, const CNetworkTemplate& chainparams, const uint256& hash);
 bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned nRequired, const Consensus::Params& consensusParams);
+
+/** No amount larger than this (in satoshi) is valid.
+ *
+ * Note that this constant is *not* the total money supply, which in Bitcoin
+ * currently happens to be less than 21,000,000 BTC for various reasons, but
+ * rather a sanity check. As this sanity check is used by consensus-critical
+ * validation code, the exact value of the MAX_MONEY constant is consensus
+ * critical; in unusual circumstances like a(nother) overflow bug that allowed
+ * for the creation of coins out of thin air modification could lead to a fork.
+ * */
+//static const CAmount MAX_MONEY = 25000000000 * COIN;
+
+inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <= pnetMan->getActivePaymentNetwork()->MAX_MONEY()); }
+
 
 /** Minimum disk space required - used in CheckDiskSpace() */
 static const uint64_t nMinDiskSpace = 52428800;
