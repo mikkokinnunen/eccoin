@@ -237,7 +237,7 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 // Setting the target to > than 550MB will make it likely we can respect the target.
 static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
 
-static const int64_t MAX_MINT_PROOF_OF_STAKE = 0.1 * COIN;
+static const int64_t MAX_MINT_PROOF_OF_STAKE = 100000; // in satoshi
 
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
