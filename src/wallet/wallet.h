@@ -72,7 +72,7 @@ static const CAmount HIGH_TX_FEE_PER_KB = 10000000;
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
 static const CAmount HIGH_MAX_TX_FEE = 100 * HIGH_TX_FEE_PER_KB;
 //! minimum change amount
-static const CAmount MIN_CHANGE = CENT;
+static const CAmount MIN_CHANGE = 1000000;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -sendfreetransactions
