@@ -28,7 +28,7 @@
 /** Context-independent validity checks */
 bool CheckTransaction(const CTransaction& tx, CValidationState& state);
 
-bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction& ptx, CValidationState &state);
-void ProcessServiceCommand(const CServiceTransaction &stx, const CTransaction& ptx, CValidationState &state, const CBlock* block = nullptr);
+bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction& ptx);
+void ProcessServiceCommand(const CServiceTransaction &stx, const CTransaction& ptx, const CBlock* block = nullptr);
 
 #endif // TXVALIDATION_H

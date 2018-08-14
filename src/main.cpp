@@ -1517,14 +1517,14 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             }
             else
             {
-                if(!CheckServiceTransaction(stx, *tx, state))
+                if(!CheckServiceTransaction(stx, *tx))
                 {
                     // we dont want the block to fail on an ans error if everything was valid coin wise
                     LogPrintf("CheckBlock(): CheckServiceTransaction of %s failed with %s. This is a non fatal error\n", tx->GetHash().ToString(), FormatStateMessage(state));
                 }
                 else
                 {
-                    ProcessServiceCommand(stx, *tx, state, &block);
+                    ProcessServiceCommand(stx, *tx, &block);
                 }
             }
         }

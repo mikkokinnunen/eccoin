@@ -279,9 +279,9 @@ bool ProcessNewBlock(CValidationState& state, const CNetworkTemplate& chainparam
                 {
                     //if we can get the transaction we have already processed it so it is safe to call CheckTransactionANS here
                     CValidationState state;
-                    if(CheckServiceTransaction(pstx, tx, state))
+                    if(CheckServiceTransaction(pstx, tx))
                     {
-                        ProcessServiceCommand(pstx, tx, state);
+                        ProcessServiceCommand(pstx, tx);
                         RelayServiceTransaction(pstx, *g_connman.get());
                     }
                     else
