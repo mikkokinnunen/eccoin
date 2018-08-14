@@ -83,31 +83,36 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state)
 
 
 /// This should only be run after CheckTransaction is run on the payment transaction
-bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction& ptx, CValidationState &state)
+bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction& ptx)
 {
     if(stx.IsNull())
     {
-        return state.DoS(100, false, REJECT_INVALID, "service-transaction-is-null");
+        LogPrintf("service-transaction-is-null");
+        return false;
     }
 
     if(ptx.IsNull())
     {
-        return state.DoS(100, false, REJECT_INVALID, "payment-transaction-is-null");
+        LogPrintf("payment-transaction-is-null");
+        return false;
     }
 
     if(ptx.nVersion < 2)
     {
-        return state.DoS(100, false, REJECT_INVALID, "payment-version-too-low");
+        LogPrintf("payment-version-too-low");
+        return false;
     }
 
     if(stx.GetHash() != ptx.serviceReferenceHash)
     {
-        return state.DoS(100, false, REJECT_INVALID, "service-hash-not-referenced");
+        LogPrintf("service-hash-not-referenced");
+        return false;
     }
 
     if(stx.paymentReferenceHash != ptx.GetHash())
     {
-        return state.DoS(100, false, REJECT_INVALID, "payment-hash-not-referenced");
+        LogPrintf("payment-hash-not-referenced");
+        return false;
     }
 
     std::vector<std::vector<unsigned char> > vSolutionsIn;
@@ -117,11 +122,13 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
 
     if(ptx.vin.size() != 1)
     {
-        return state.DoS(100, false, REJECT_INVALID, "payment-tx-vin-improper-size");
+        LogPrintf("payment-tx-vin-improper-size");
+        return false;
     }
     if(ptx.vout.size() > 2) // should only be sending to ourself and maybe have a change output
     {
-        return state.DoS(100, false, REJECT_INVALID, "payment-tx-vout-improper-size");
+        LogPrintf("payment-tx-vout-improper-size");
+        return false;
     }
 
     /// get the pubkeys to resolve and compare
@@ -133,7 +140,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
     // previous transaction not in main chain, may occur during initial download
     if (!GetTransaction(prev.hash, txPrev, pnetMan->getActivePaymentNetwork()->GetConsensus(), blockHashOfTx))
     {
-        return state.DoS(100, false, REJECT_INVALID, "read-txPrev-failed");
+        LogPrintf("read-txPrev-failed");
+        return false;
     }
 
     CScript scriptPubKeyIn = txPrev.vout[prev.n].scriptPubKey;
@@ -142,7 +150,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
 
     if (!Solver(scriptPubKeyIn, whichTypeIn, vSolutionsIn))
     {
-        return state.DoS(100, false, REJECT_INVALID, "could-not-solve-for-sig-in");
+        LogPrintf("could-not-solve-for-sig-in");
+        return false;
     }
 
     if (whichTypeIn == TX_PUBKEY)
@@ -150,7 +159,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
         CPubKey pubKey(vSolutionsIn[0]);
         if (!pubKey.IsValid())
         {
-            return state.DoS(100, false, REJECT_INVALID, "invalid-pub-key-in");
+            LogPrintf("invalid-pub-key-in");
+            return false;
         }
         addressInID = pubKey.GetID();
     }
@@ -160,7 +170,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
     }
     else
     {
-        return state.DoS(100, false, REJECT_INVALID, "invalid-sig-type-in");
+        LogPrintf("invalid-sig-type-in");
+        return false;
     }
     addrIn = CBitcoinAddress(addressInID);
 
@@ -172,7 +183,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
 
     if (!Solver(scriptPubKeyOut, whichTypeOut, vSolutionsOut))
     {
-        return state.DoS(100, false, REJECT_INVALID, "could-not-solve-for-sig-out");
+        LogPrintf("could-not-solve-for-sig-out");
+        return false;
     }
 
     if (whichTypeOut == TX_PUBKEY)
@@ -180,7 +192,8 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
         CPubKey pubKey(vSolutionsOut[0]);
         if (!pubKey.IsValid())
         {
-            return state.DoS(100, false, REJECT_INVALID, "invalid-pub-key-out");
+            LogPrintf("invalid-pub-key-out");
+            return false;
         }
         addressOutID = pubKey.GetID();
     }
@@ -190,13 +203,15 @@ bool CheckServiceTransaction(const CServiceTransaction &stx, const CTransaction&
     }
     else
     {
-        return state.DoS(100, false, REJECT_INVALID, "invalid-sig-type-out");
+        LogPrintf("invalid-sig-type-out");
+        return false;
     }
     addrOut = CBitcoinAddress(addressOutID);
 
     if(addrIn.ToString() != addrOut.ToString())
     {
-        return state.DoS(100, false, REJECT_INVALID, "ownership-being-transfered");
+        LogPrintf("ownership-being-transfered");
+        return false;
     }
     return true;
 }
@@ -381,7 +396,7 @@ void ProcessANSCommand(const CServiceTransaction &stx, const CTransaction& ptx, 
     // else, leave blank for future use
 }
 
-void ProcessServiceCommand(const CServiceTransaction &stx, const CTransaction& ptx, CValidationState &state, const CBlock* block)
+void ProcessServiceCommand(const CServiceTransaction &stx, const CTransaction& ptx, const CBlock* block)
 {
     if(stx.nServiceId == 0)
     {
@@ -389,5 +404,3 @@ void ProcessServiceCommand(const CServiceTransaction &stx, const CTransaction& p
     }
     // else, leave blank for future use
 }
-
-
