@@ -108,9 +108,7 @@ void CNetworkManager::ConstructLegacyNetworkTemplate()
     assert(legacyTemplate->consensus.hashGenesisBlock == uint256S("0xa60ac43c88dbc44b826cf315352a8a7b373d2af8b6e1c4c4a0638859c5e9ecd1"));
     assert(legacyTemplate->genesis.hashMerkleRoot == uint256S("0x4db82fe8b45f3dae2b7c7b8be5ec4c37e72e25eaf989b9db24ce1d0fd37eed8b"));
 
-    legacyTemplate->vSeeds.push_back(CDNSSeedData("CryptoUnitedSeed", "www.cryptounited.io", true));
     legacyTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed1", "138.197.100.45", true));
-    legacyTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed2", "159.203.172.212", true));
     legacyTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed3", "eccnode.altj.com", true));
 
     legacyTemplate->base58Prefixes[CNetworkTemplate::PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
@@ -240,9 +238,7 @@ void CNetworkManager::ConstructPaymentNetworkTemplate()
     assert(paymentTemplate->consensus.hashGenesisBlock == uint256S("0xa60ac43c88dbc44b826cf315352a8a7b373d2af8b6e1c4c4a0638859c5e9ecd1"));
     assert(paymentTemplate->genesis.hashMerkleRoot == uint256S("0x4db82fe8b45f3dae2b7c7b8be5ec4c37e72e25eaf989b9db24ce1d0fd37eed8b"));
 
-    paymentTemplate->vSeeds.push_back(CDNSSeedData("CryptoUnitedSeed", "www.cryptounited.io", true));
     paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed1", "138.197.100.45", true));
-    paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed2", "159.203.172.212", true));
     paymentTemplate->vSeeds.push_back(CDNSSeedData("ECC-Seed3", "eccnode.altj.com", true));
 
     paymentTemplate->base58Prefixes[CNetworkTemplate::PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
@@ -318,8 +314,6 @@ void CNetworkManager::ConstructTetnet0Template()
     netManTestnetTemplate->consensus.hashGenesisBlock = netManTestnetTemplate->genesis.GetHash();
     assert(netManTestnetTemplate->consensus.hashGenesisBlock == uint256S("0x94e16dc2de0cec9f52c9e8f1b729b4e1d9d47720eac56388c33e9dec30e52124"));
     assert(netManTestnetTemplate->genesis.hashMerkleRoot == uint256S("0xc0e7a1a7812892b4026a3d1a52689180204d742bc968f9d42dddeb338f63cdf0"));
-
-    netManTestnetTemplate->vSeeds.push_back(CDNSSeedData("CryptoUnitedSeed", "www.cryptounited.io", true));
 
     netManTestnetTemplate->base58Prefixes[CNetworkTemplate::PUBKEY_ADDRESS] = std::vector<unsigned char>(1,51);
     netManTestnetTemplate->base58Prefixes[CNetworkTemplate::SCRIPT_ADDRESS] = std::vector<unsigned char>(1,15);
