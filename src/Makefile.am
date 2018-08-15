@@ -46,6 +46,7 @@ BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
   amount.h \
+  blockstorage/blockstorage.h \
   services/ans.h \
   services/ansrecord.h \
   args.h \
@@ -169,6 +170,7 @@ libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIC_FLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
   addrdb.cpp \
   addrman.cpp \
+  blockstorage/blockstorage.cpp \
   services/ans.cpp \
   services/ansrecord.cpp \
   bloom.cpp \

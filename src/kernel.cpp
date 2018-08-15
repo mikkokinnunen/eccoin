@@ -33,6 +33,7 @@
 #include "args.h"
 #include "script/stakescript.h"
 #include "init.h"
+#include "blockstorage/blockstorage.h"
 
 // The stake modifier used to hash for a stake kernel is chosen as the stake
 // modifier about a selection interval later than the coin generating the kernel

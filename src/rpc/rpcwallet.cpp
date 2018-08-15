@@ -20,6 +20,7 @@
 
 #include "amount.h"
 #include "base58.h"
+#include "blockstorage/blockstorage.h"
 #include "chain/chain.h"
 #include "core_io.h"
 #include "init.h"

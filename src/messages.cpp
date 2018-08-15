@@ -20,6 +20,7 @@
 
 #include "messages.h"
 
+#include "blockstorage/blockstorage.h"
 #include "services/ans.h"
 #include "serialize.h"
 #include "sync.h"

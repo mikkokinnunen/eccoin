@@ -19,6 +19,7 @@
  */
 
 #include "services/ans.h"
+#include "blockstorage/blockstorage.h"
 #include "main.h"
 #include "consensus/consensus.h"
 #include "script/standard.h"

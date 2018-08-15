@@ -23,6 +23,7 @@
 #include "args.h"
 #include "services/ans.h"
 #include "base58.h"
+#include "blockstorage/blockstorage.h"
 #include "chain/checkpoints.h"
 #include "chain/chain.h"
 #include "coincontrol.h"

@@ -19,6 +19,7 @@
  */
 
 #include "base58.h"
+#include "blockstorage/blockstorage.h"
 #include "chain/chain.h"
 #include "coins.h"
 #include "consensus/validation.h"

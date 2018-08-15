@@ -34,6 +34,7 @@
 #include "networks/netman.h"
 #include "init.h"
 #include "txmempool.h"
+#include "blockstorage/blockstorage.h"
 
 
 struct serializeTx

@@ -17,6 +17,7 @@
  */
 
 #include "chainman.h"
+#include "blockstorage/blockstorage.h"
 #include "main.h"
 #include "checkpoints.h"
 #include "networks/netman.h"

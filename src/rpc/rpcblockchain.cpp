@@ -38,6 +38,7 @@
 #include "init.h"
 #include "verifydb.h"
 #include "processblock.h"
+#include "blockstorage/blockstorage.h"
 
 #include <stdint.h>
 

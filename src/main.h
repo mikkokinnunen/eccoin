@@ -439,12 +439,6 @@ public:
     ScriptError GetScriptError() const { return error; }
 };
 
-
-/** Functions for disk access for blocks */
-bool WriteBlockToDisk(const CBlock& block, CDiskBlockPos& pos, const CMessageHeader::MessageMagic& messageStart);
-bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams);
-bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams);
-
 /** Functions for validating blocks and updating the block tree */
 
 /** Context-independent validity checks */

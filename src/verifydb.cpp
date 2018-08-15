@@ -20,6 +20,7 @@
 
 #include <thread>
 
+#include "blockstorage/blockstorage.h"
 #include "verifydb.h"
 #include "main.h"
 #include "init.h"
