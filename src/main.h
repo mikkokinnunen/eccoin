@@ -202,7 +202,6 @@ extern std::set<CBlockIndex*> setDirtyBlockIndex;
 extern ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS];
 void PruneBlockIndexCandidates();
 bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidationState& state, const CNetworkTemplate& chainparams, const uint256& hash);
-bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned nRequired, const Consensus::Params& consensusParams);
 
 /** No amount larger than this (in satoshi) is valid.
  *
