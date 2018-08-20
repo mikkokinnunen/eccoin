@@ -208,25 +208,17 @@ static const double UNLIKELY_PCT = .5;
 /** Require an avg of 1 tx in the combined fee bucket per block to have stat significance */
 static const double SUFFICIENT_FEETXS = 1;
 
-/** Require only an avg of 1 tx every 5 blocks in the combined pri bucket (way less pri txs) */
-static const double SUFFICIENT_PRITXS = .2;
-
 // Minimum and Maximum values for tracking fees and priorities
 static const double MIN_FEERATE = 10;
 static const double MAX_FEERATE = 1e7;
-static const double INF_FEERATE = pnetMan->getActivePaymentNetwork()->MAX_MONEY();
-static const double MIN_FEE_PRIORITY = 10;
-static const double MAX_FEE_PRIORITY = 1e16;
-static const double INF_PRIORITY = 1e9 * pnetMan->getActivePaymentNetwork()->MAX_MONEY();
+static const double INF_FEERATE = 100000000;
 
 // We have to lump transactions into buckets based on fee or priority, but we want to be able
 // to give accurate estimates over a large range of potential fees and priorities
 // Therefore it makes sense to exponentially space the buckets
 /** Spacing of FeeRate buckets */
-static const double FEE_SPACING = 1.1;
+static const double FEE_SPACING = 1.01;
 
-/** Spacing of Priority buckets */
-static const double PRI_SPACING = 2;
 
 /**
  *  We want to be able to estimate fees or priorities that are needed on tx's to be included in
@@ -253,10 +245,7 @@ public:
     void removeTx(uint256 hash);
 
     /** Is this transaction likely included in a block because of its fee?*/
-    bool isFeeDataPoint(const CFeeRate &fee, double pri);
-
-    /** Is this transaction likely included in a block because of its priority?*/
-    bool isPriDataPoint(const CFeeRate &fee, double pri);
+    bool isFeeDataPoint(const CFeeRate &fee);
 
     /** Return a fee estimate */
     CFeeRate estimateFee(int confTarget);
@@ -275,7 +264,6 @@ public:
 
 private:
     CFeeRate minTrackedFee; //! Passed to constructor to avoid dependency on main
-    double minTrackedPriority; //! Set to AllowFreeThreshold
     unsigned int nBestSeenHeight;
     struct TxStatsInfo
     {
@@ -289,10 +277,9 @@ private:
     std::map<uint256, TxStatsInfo> mapMemPoolTxs;
 
     /** Classes to track historical data on transaction confirmations */
-    TxConfirmStats feeStats, priStats;
+    TxConfirmStats feeStats;
 
     /** Breakpoints to help determine whether a transaction was confirmed by priority or Fee */
     CFeeRate feeLikely, feeUnlikely;
-    double priLikely, priUnlikely;
 };
 #endif /*BITCOIN_POLICYESTIMATOR_H */

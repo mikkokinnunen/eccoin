@@ -41,7 +41,7 @@
 class CAutoFile;
 class CBlockIndex;
 
-inline double AllowFreeThreshold() { return pnetMan->getActivePaymentNetwork()->COIN() * 144 / 250; }
+inline double AllowFreeThreshold() { return 57600000; } // COIN * 144 / 250 or 1 coin day
 inline bool AllowFree(double dPriority)
 {
     // Large (in bytes) low-priority (new, small-coin) transactions
