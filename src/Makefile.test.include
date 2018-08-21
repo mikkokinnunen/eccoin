@@ -64,7 +64,7 @@ BITCOIN_TESTS =\
   test/crypto_tests.cpp \
   test/getarg_tests.cpp \
   test/hash_tests.cpp \
-	test/jsonutil.cpp \
+  test/jsonutil.cpp \
   test/key_tests.cpp \
   test/limitedmap_tests.cpp \
   test/dbwrapper_tests.cpp \
@@ -83,7 +83,7 @@ BITCOIN_TESTS =\
   test/sigopcount_tests.cpp \
   test/skiplist_tests.cpp \
   test/streams_tests.cpp \
-	test/test_bitcoin.cpp \
+  test/test_bitcoin.cpp \
   test/test_bitcoin.h \
   test/testutil.cpp \
   test/testutil.h \
@@ -94,8 +94,24 @@ BITCOIN_TESTS =\
 
 test_test_bitcoin_SOURCES = $(BITCOIN_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
 test_test_bitcoin_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) -I$(builddir)/test/ $(TESTDEFS) $(EVENT_CFLAGS)
-test_test_bitcoin_LDADD = $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) \
-  $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) $(EVENT_LIBS) $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(LIBSECP256K1) $(EVENT_LIBS) $(EVENT_PTHREADS_LIBS)
+test_test_bitcoin_LDADD = \
+  $(LIBBITCOIN_SERVER) \
+  $(LIBBITCOIN_CLI) \
+  $(LIBBITCOIN_COMMON) \
+  $(LIBBITCOIN_UTIL) \
+  $(LIBBITCOIN_CONSENSUS) \
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBUNIVALUE) \
+  $(LIBLEVELDB) \
+  $(LIBLEVELDB_SSE42) \
+  $(LIBMEMENV) \
+  $(EVENT_LIBS) \
+  $(BOOST_LIBS) \
+  $(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
+  $(LIBSECP256K1) \
+  $(EVENT_LIBS) \
+  $(EVENT_PTHREADS_LIBS)
+
 test_test_bitcoin_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 if ENABLE_WALLET
 test_test_bitcoin_LDADD += $(LIBBITCOIN_WALLET)
