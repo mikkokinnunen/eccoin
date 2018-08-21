@@ -76,8 +76,8 @@
 #include <thread>
 
 bool fShutdown = false;
-CWallet* pwalletMain = NULL;
-CNetworkManager* pnetMan = NULL;
+CWallet* pwalletMain = nullptr;
+CNetworkManager* pnetMan = nullptr;
 
 std::unique_ptr<CConnman> g_connman;
 std::unique_ptr<PeerLogicValidation> peerLogic;
@@ -246,13 +246,13 @@ void Shutdown()
             pnetMan->getChainActive()->pcoinsTip.reset();
         }
         pcoinscatcher.reset();
-        pcoinscatcher = NULL;
+        pcoinscatcher = nullptr;
         pcoinsdbview.reset();
-        pcoinsdbview = NULL;
+        pcoinsdbview = nullptr;
         if(pnetMan)
         {
             pnetMan->getChainActive()->pblocktree.reset();
-            pnetMan->getChainActive()->pblocktree = NULL;
+            pnetMan->getChainActive()->pblocktree = nullptr;
         }
     }
 
@@ -269,7 +269,7 @@ void Shutdown()
     UnregisterAllValidationInterfaces();
 
     delete pwalletMain;
-    pwalletMain = NULL;
+    pwalletMain = nullptr;
     g_ans.reset();
     g_stxmempool.reset();
     globalVerifyHandle.reset();
@@ -741,8 +741,6 @@ namespace { // Variables internal to initialization process only
 
 ServiceFlags nRelevantServices = NODE_NETWORK;
 int nMaxConnections;
-int nUserMaxConnections;
-int nFD;
 ServiceFlags nLocalServices = NODE_NETWORK;
 } // namespace
 

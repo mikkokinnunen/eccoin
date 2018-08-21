@@ -1377,7 +1377,7 @@ bool ApplyTxInUndo(Coin &&undo, CCoinsViewCache& view, const COutPoint& out)
         }
         else
         {
-            return DISCONNECT_FAILED; // adding output for transaction without known metadata
+            return false; //DISCONNECT_FAILED; // adding output for transaction without known metadata
         }
     }
     view.AddCoin(out, std::move(undo), undo.fCoinBase);
@@ -1443,7 +1443,7 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
                 const COutPoint &out = tx.vin[j].prevout;
                 int res = ApplyTxInUndo(std::move(txundo.vprevout[j]), view, out);
                 if (res == DISCONNECT_FAILED)
-                    return DISCONNECT_FAILED;
+                    return false; // DISCONNECT_FAILED;
                 fClean = fClean && res != DISCONNECT_UNCLEAN;
             }
         }

@@ -52,12 +52,12 @@
 
 void WaitForShutdown()
 {
-    bool fShutdown = ShutdownRequested();
+    bool _fShutdown = ShutdownRequested();
     // Tell the main threads to shutdown.
-    while (!fShutdown)
+    while (!_fShutdown)
     {
         MilliSleep(200);
-        fShutdown = ShutdownRequested();
+        _fShutdown = ShutdownRequested();
     }
     Interrupt();
 }
@@ -135,9 +135,12 @@ bool AppInit(int argc, char* argv[])
             return false;
         }
         // Check for -testnet or -regtest parameter (Params() calls are only valid after this clause)
-        try {
+        try
+        {
             CheckParams(ChainNameFromCommandLine());
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception& e)
+        {
             fprintf(stderr, "Error: %s\n", e.what());
             return false;
         }
@@ -201,7 +204,9 @@ bool AppInit(int argc, char* argv[])
         // threadGroup.join_all(); was left out intentionally here, because we didn't re-test all of
         // the startup-failure cases to make sure they don't result in a hang due to some
         // thread-blocking-waiting-for-another-thread-during-startup case
-    } else {
+    }
+    else
+    {
         WaitForShutdown();
     }
     Shutdown();

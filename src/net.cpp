@@ -1458,37 +1458,37 @@ void CConnman::ThreadSocketHandler() {
             // Inactivity checking
             //
             int64_t nTime = GetSystemTimeInSeconds();
-            if (nTime - pnode->nTimeConnected > 60) 
+            if (nTime - pnode->nTimeConnected > 60)
             {
-                if (pnode->nLastRecv == 0 || pnode->nLastSend == 0) 
+                if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
                     LogPrintf("socket no message in first 60 "
                                          "seconds, %d %d from %d\n",
                              pnode->nLastRecv != 0, pnode->nLastSend != 0,
                              pnode->id);
                     pnode->fDisconnect = true;
-                } 
-                else if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL) 
+                }
+                else if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL)
                 {
                     LogPrintf("socket sending timeout: %is\n",
                               nTime - pnode->nLastSend);
                     pnode->fDisconnect = true;
-                } 
-                else if (nTime - pnode->nLastRecv > TIMEOUT_INTERVAL) 
+                }
+                else if (nTime - pnode->nLastRecv > TIMEOUT_INTERVAL)
                 {
                     LogPrintf("socket receive timeout: %is\n",
                               nTime - pnode->nLastRecv);
                     pnode->fDisconnect = true;
-                } 
+                }
                 else if (pnode->nPingNonceSent &&
-                           pnode->nPingUsecStart + TIMEOUT_INTERVAL * 1000000 < GetTimeMicros()) 
+                           pnode->nPingUsecStart + TIMEOUT_INTERVAL * 1000000 < GetTimeMicros())
                 {
                     LogPrintf("ping timeout: %fs\n",
                               0.000001 *
                                   (GetTimeMicros() - pnode->nPingUsecStart));
                     pnode->fDisconnect = true;
-                } 
-                else if (!pnode->fSuccessfullyConnected) 
+                }
+                else if (!pnode->fSuccessfullyConnected)
                 {
                     LogPrintf("version handshake timeout from %d\n", pnode->id);
                     pnode->fDisconnect = true;
@@ -2881,16 +2881,16 @@ CNode::~CNode() {
     }
 }
 
-void CNode::AskFor(const CInv &inv) 
+void CNode::AskFor(const CInv &inv)
 {
-    if (mapAskFor.size() > MAPASKFOR_MAX_SZ || setAskFor.size() > SETASKFOR_MAX_SZ) 
+    if (mapAskFor.size() > MAPASKFOR_MAX_SZ || setAskFor.size() > SETASKFOR_MAX_SZ)
     {
         return;
     }
 
     // a peer may not have multiple non-responded queue positions for a single
     // inv item.
-    if (!setAskFor.insert(inv.hash).second) 
+    if (!setAskFor.insert(inv.hash).second)
     {
         return;
     }
@@ -2899,11 +2899,11 @@ void CNode::AskFor(const CInv &inv)
     // the request can be sent.
     int64_t nRequestTime;
     limitedmap<uint256, int64_t>::const_iterator it = mapAlreadyAskedFor.find(inv.hash);
-    if (it != mapAlreadyAskedFor.end()) 
+    if (it != mapAlreadyAskedFor.end())
     {
         nRequestTime = it->second;
-    } 
-    else 
+    }
+    else
     {
         nRequestTime = 0;
     }
@@ -2924,11 +2924,11 @@ void CNode::AskFor(const CInv &inv)
     {
         nRequestTime = 0;
     }
-    if (it != mapAlreadyAskedFor.end()) 
+    if (it != mapAlreadyAskedFor.end())
     {
         mapAlreadyAskedFor.update(it, nRequestTime);
-    } 
-    else 
+    }
+    else
     {
         mapAlreadyAskedFor.insert(std::make_pair(inv.hash, nRequestTime));
     }

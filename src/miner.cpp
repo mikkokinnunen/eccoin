@@ -218,7 +218,7 @@ std::unique_ptr<CBlockTemplate> CreateNewBlock(CWallet* pwallet, bool fProofOfSt
     // Collect memory pool transactions into the block
     {
         LOCK2(cs_main, mempool.cs);
-        CBlockIndex* pindexPrev = pnetMan->getChainActive()->chainActive.Tip();
+        pindexPrev = pnetMan->getChainActive()->chainActive.Tip();
         const int nHeight = pindexPrev->nHeight + 1;
         pblock->nTime = GetAdjustedTime();
         const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -412,9 +412,11 @@ bool CheckWork(const std::shared_ptr<const CBlock> pblock, CWallet& wallet, CRes
 
     // Found a solution
     {
-        LOCK(cs_main);
-        if (pblock->hashPrevBlock != pnetMan->getChainActive()->chainActive.Tip()->GetBlockHash())
-            return error("BMiner : generated block is stale");
+        {
+            LOCK(cs_main);
+            if (pblock->hashPrevBlock != pnetMan->getChainActive()->chainActive.Tip()->GetBlockHash())
+                return error("BMiner : generated block is stale");
+        }
 
         // Remove key from key pool
         reservekey.KeepKey();

@@ -266,9 +266,7 @@ private:
     T *indirect_ptr(difference_type pos) {
         return reinterpret_cast<T *>(_union.indirect) + pos;
     }
-    const T *indirect_ptr(difference_type pos) const {
-        return reinterpret_cast<const T *>(_union.indirect) + pos;
-    }
+    const T *indirect_ptr(difference_type pos) const { return reinterpret_cast<const T *>(_union.indirect) + pos; }
     bool is_direct() const { return _size <= N; }
 
     void change_capacity(size_type new_capacity) {

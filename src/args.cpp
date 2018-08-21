@@ -248,7 +248,7 @@ void CArgsManager::ReadConfigFile()
         gen_random_str(randpass);
         std::string strpass = std::string(randpass);
         std::string passline = "rpcpassword=" + strpass + "\n";
-        fprintf(ConfFile, passline.c_str());
+        fprintf(ConfFile, "%s",passline.c_str());
         fprintf(ConfFile, "rpcport=19119\n");
         fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
         fprintf(ConfFile, "rpcallowip=127.0.0.1\n");

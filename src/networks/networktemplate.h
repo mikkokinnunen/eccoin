@@ -84,13 +84,13 @@ public:
     CAmount coin;
     CAmount cent;
 
-    const CAmount COIN() const { return coin; }
-    const CAmount CENT() const { return cent; }
+    CAmount COIN() const { return coin; }
+    CAmount CENT() const { return cent; }
     const Consensus::Params& GetConsensus() const { return consensus; }
     const CMessageHeader::MessageMagic& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
     int GetRPCPort() const { return nRPCPort; }
-    const CAmount MAX_MONEY() const { return 25000000000 * coin; }
+    CAmount MAX_MONEY() const { return 25000000000 * coin; }
 
     const CBlock& GenesisBlock() const { return genesis; }
     /** Make miner wait to have peers to avoid wasting work */

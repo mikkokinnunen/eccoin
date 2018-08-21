@@ -5,6 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chain/chain.h"
+#include "blockstorage/blockstorage.h"
 #include "httpserver.h"
 #include "init.h"
 #include "main.h"

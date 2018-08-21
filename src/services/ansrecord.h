@@ -51,8 +51,8 @@ public:
 
     CAnsRecord(const CServiceTransaction stx, std::string addr, std::string code = "")
     {
-        std::string name(stx.vdata.begin(), stx.vdata.end());
-        this->name = name;
+        std::string _name(stx.vdata.begin(), stx.vdata.end());
+        this->name = _name;
         this->address = addr;
         this->expireTime = CalcValidTime(stx.nTime, stx.paymentReferenceHash);
         this->paymentHash = stx.paymentReferenceHash;
